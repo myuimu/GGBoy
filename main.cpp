@@ -3,7 +3,7 @@
 
 int main(int argc, char* argv[])
 {
-  	GB gameboy(__argv[1]);
+  	GB gameboy(argv[1]);
 	gameboy.execute();
     gameboy.mem->save();
 	return 0;
