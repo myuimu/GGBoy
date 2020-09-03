@@ -9,7 +9,7 @@ GGBoy is a multiplatform Game Boy emulator written in C++, using SDL2 to handle 
 ## Building
 
 * Requires [SDL2 Development Libraries](https://www.libsdl.org/download-2.0.php)
-* `g++ main.cpp -o GGBoy -std=c++17 -lSDL2main -lSDL2 -mwindows`
+* `g++ main.cpp -o GGBoy -std=c++17 -lSDL2main -lSDL2`
 
 ## Running
 
