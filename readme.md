@@ -1,6 +1,6 @@
 # GGBoy
 
-GGBoy is a multiplatform Game Boy emulator written in C++, using SDL2 to handle input and graphics
+GGBoy is a cross-platform Game Boy emulator written in C++, using SDL2 to handle input and graphics
 
 <img src="https://i.imgur.com/SirzzN9.png" alt="Link's Awakening Intro" width="300"/> <img src="https://i.imgur.com/EUAjcUA.png" alt="Pokemon Blue" width="300"/>
 
