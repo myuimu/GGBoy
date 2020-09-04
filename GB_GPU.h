@@ -32,6 +32,7 @@ class GB_GPU {
         SDL_Surface* screenSurface = nullptr;
         SDL_Surface* gameSurface = nullptr;
         uint8_t* pixels = nullptr;
+        uint8_t screen[144][160][4];
 
         GB_GPU()
         {
@@ -133,7 +134,7 @@ class GB_GPU {
                 else if(line == 144) //Start of vBlank - Trigger interrupt - Draw frame
                 {
                     memory->write(0xFF0F, memory->read(0xFF0F) | 1);
-
+                    drawArrayToSurface();
                     SDL_BlitScaled(gameSurface, NULL, screenSurface, NULL);
                     SDL_UpdateWindowSurface( window );
                 }
@@ -296,9 +297,10 @@ class GB_GPU {
                 if((line < 0) || (line > 143) || (i < 0) || (i > 159))
                     continue;
                 
-                pixels[4 * (line * gameSurface -> w + i) + 0] = blue;
-                pixels[4 * (line * gameSurface -> w + i) + 1] = green;
-                pixels[4 * (line * gameSurface -> w + i) + 2] = red;
+                screen[line][i][0] = blue;
+                screen[line][i][1] = green;
+                screen[line][i][2] = red;
+                screen[line][i][3] = colorNum;
             }
         }
 
@@ -333,6 +335,7 @@ class GB_GPU {
                 uint8_t tileLocation = s.tileLocation;
                 uint8_t attributes = s.attributes;
 
+                bool bgPriority = (attributes & (1 << 7)) >> 7;
                 bool yFlip = ((attributes & 0x40) == 0x40);
                 bool xFlip = ((attributes & 0x20) == 0x20);
             
@@ -378,6 +381,14 @@ class GB_GPU {
                         if(colorNum == 0)
                             continue;
 
+                        int xPix = 0 - tilePixel;
+                        xPix += 7;
+                        int pixel = xPix + xPos;
+
+                        //Check if background should display over sprite
+                        if(bgPriority == 1 && screen[line][pixel][3] != 0)
+                            continue;
+
                         uint8_t red = 0;
                         uint8_t blue = 0;
                         uint8_t green = 0;
@@ -401,17 +412,13 @@ class GB_GPU {
                                 break;
                         }
 
-                        int xPix = 0 - tilePixel;
-                        xPix += 7;
-                        int pixel = xPix + xPos;
-
                         //Check that the pixel is in bounds
                         if((line < 0) || (line > 143) || (pixel < 0) || (pixel > 159))
                             continue;
                 
-                        pixels[4 * (line * gameSurface -> w + pixel) + 0] = blue;
-                        pixels[4 * (line * gameSurface -> w + pixel) + 1] = green;
-                        pixels[4 * (line * gameSurface -> w + pixel) + 2] = red;
+                        screen[line][pixel][0] = blue;
+                        screen[line][pixel][1] = green;
+                        screen[line][pixel][2] = red;
                     }
                 }
             }
@@ -451,5 +458,18 @@ class GB_GPU {
             color |= (palette & (1 << lo)) >> lo;
 
             return color;
+        }
+
+        void drawArrayToSurface()
+        {
+            for(int i = 0; i < 144; i++)
+            {
+                for(int j = 0; j < 160; j++)
+                {
+                    pixels[4 * (i * gameSurface -> w + j) + 0] = screen[i][j][0];
+                    pixels[4 * (i * gameSurface -> w + j) + 1] = screen[i][j][1];
+                    pixels[4 * (i * gameSurface -> w + j) + 2] = screen[i][j][2];
+                }
+            }
         }
 };
