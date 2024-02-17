@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include <SDL2/SDL.h>
+#include "SDL.h"
 #include <cmath>
 
 class GB_MEM {

@@ -3,7 +3,7 @@
 #include "GB_MEM.h"
 #include "GB_GPU.h"
 #include "GB_CONST.h"
-#include <SDL2/SDL.h>
+#include "SDL.h"
 #include <string>
 #include <iostream>
 #include <exception>

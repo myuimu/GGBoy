@@ -1,5 +1,5 @@
 #pragma once
-#include <SDL2/SDL.h>
+#include "SDL.h"
 #include "GB_CONST.h"
 #include <stdio.h>
 #include <chrono>
