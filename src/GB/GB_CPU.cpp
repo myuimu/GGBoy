@@ -83,6 +83,25 @@ void GB_CPU::printRegs() {
     std::cout << "Flags: " << std::bitset<8>(reg.f) << "\n";
 }
 
+void GB_CPU::printRegsForLog() {
+    std::cout << std::uppercase << std::hex << std::setfill('0')
+        << "A:" << std::setw(2) << static_cast<int>(reg.a)
+        << " F:" << std::setw(2) << static_cast<int>(reg.f)
+        << " B:" << std::setw(2) << static_cast<int>(reg.b)
+        << " C:" << std::setw(2) << static_cast<int>(reg.c)
+        << " D:" << std::setw(2) << static_cast<int>(reg.d)
+        << " E:" << std::setw(2) << static_cast<int>(reg.e)
+        << " H:" << std::setw(2) << static_cast<int>(reg.h)
+        << " L:" << std::setw(2) << static_cast<int>(reg.l)
+        << " SP:" << std::setw(4) << static_cast<int>(reg.sp)
+        << " PC:" << std::setw(4) << static_cast<int>(reg.pc)
+        << " PCMEM:" << std::setw(2) << static_cast<int>(memory->read(reg.pc))
+        << "," << std::setw(2) << static_cast<int>(memory->read(reg.pc + 1))
+        << "," << std::setw(2) << static_cast<int>(memory->read(reg.pc + 2))
+        << "," << std::setw(2) << static_cast<int>(memory->read(reg.pc + 3))
+        << std::endl;
+}
+
 void GB_CPU::HALT() {
     halted = true;
 }
@@ -638,37 +657,38 @@ void GB_CPU::SCF() {
 }
 
 void GB_CPU::DAA() {
-    int temp = reg.a;
-    if(!testBit(N_FLAG,reg.f)) //If n flag is not set - last op was addition
-    {
-        if(testBit(H_FLAG,reg.f) || ((temp & 0x0f) > 0x09)) //H flag
-            temp += 0x6;
+    uint8_t offset = 0;
 
-        if(testBit(C_FLAG,reg.f) || temp > 0x9F) //C flag
-            temp += 0x60;
+    // Check for digits > 9
+    if (
+        testBit(H_FLAG,reg.f) ||
+        (!testBit(N_FLAG,reg.f) &&(reg.a & 0x0f) > 0x09)
+    ) {
+        offset |= 0x6;
     }
-    else //Subtraction occured
-    {
-        if(testBit(H_FLAG,reg.f))
-        {
-            temp -= 0x6;
-            if(!testBit(C_FLAG,reg.f))
-                temp &= 0xFF;
-        }
-        if(testBit(C_FLAG,reg.f))
-            temp -= 0x60;
-    }
-
-    if(temp & 0x100)
+    if (
+        testBit(C_FLAG,reg.f) ||
+        (!testBit(N_FLAG,reg.f) && reg.a > 0x99)
+    ) {
+        offset |= 0x60;
         SET(C_FLAG,reg.f);
+    }
 
+    // Add or subtract if last operation was addition/subtraction
+    if (!testBit(N_FLAG,reg.f)) {
+        reg.a += offset;
+    } else {
+        reg.a -= offset;
+    }
+
+    // Set flags
     RES(H_FLAG,reg.f);
-    if(temp == 0) //Set Z flag
+    if(reg.a == 0) {
         SET(Z_FLAG,reg.f);
-    else
+    } else {
         RES(Z_FLAG,reg.f);
+    }
 
-    reg.a = temp & 0xff;
     reg.pc++;
 }
 
@@ -1949,7 +1969,6 @@ void GB_CPU::cpl() {
 
 void GB_CPU::di() {
     reg.pc++;
-    cycles = 4 + execute();
     reg.ime = 0;
 }
 

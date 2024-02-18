@@ -334,6 +334,7 @@ class GB_CPU {
         bool checkInterrupts();
 
         void printRegs();
+        void printRegsForLog();
 
         void HALT();
         void STOP();

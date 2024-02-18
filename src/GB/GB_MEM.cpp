@@ -77,41 +77,37 @@ void GB_MEM::loadRom(std::string &fileName) {
 }
 
 unsigned char GB_MEM::read(unsigned short index) {
+    // Uncomment if using gameboy-doctor
+    // if (index == LY) {
+    //     return 0x90;
+    // }
+
     switch(index)
     {
         case 0x0000 ... 0x3FFF: //ROM Bank 0
             return memory[index];
-            break;
         case 0x4000 ... 0x7FFF: //ROM Bank 1 to n
         {
             unsigned short newAddress = index - 0x4000;
             return fullRom[newAddress + (currentROMBank*0x4000)];
-            break;
         }
         case 0x8000 ... 0x9FFF: //VRAM
             return memory[index];
-            break;
         case 0xA000 ... 0xBFFF: //External RAM if any
         {
             unsigned short newAddress = index - 0xA000;
             return RAMBanks[newAddress + (currentRAMBank*0x2000)];
-            break;
         }
         case 0xC000 ... 0xCFFF: //Work RAM Bank 0
             return memory[index];
-            break;
         case 0xD000 ... 0xDFFF: //Work RAM Bank 1
             return memory[index];
-            break;
         case 0xE000 ... 0xFDFF: //Same as 0xC000 - 0xDDFF
             return memory[index - 0x2000];
-            break;
         case 0xFE00 ... 0xFE9F: //Sprite Attribute Table (OAM)
             return memory[index];
-            break;
         case 0xFEA0 ... 0xFEFF: //Not Usable
             return 0xFF;
-            break;
         case 0xFF00:
             memory[0xFF00] |= 0x0F;
             switch((memory[0xFF00] & 0x30) >> 4)
@@ -131,19 +127,22 @@ unsigned char GB_MEM::read(unsigned short index) {
                     break;
             }
             return memory[index];
-            break;
-        case 0xFF01 ... 0xFF7F: //IO Ports
+        case 0xFF01 ... 0xFF4C: //IO Ports
             return memory[index];
-            break;
+        case 0xFF4D: // CGB KEY1 register - should always read 0xFF for DMG
+            return 0xFF;
+        case 0xFF4E ... 0xFF73: //IO Ports
+            return memory[index];
+        case 0xFF74: // CGB mode register - should always read 0xFF for DMG
+            return 0xFF;
+        case 0xFF75 ... 0xFF7F: // Undocumented IO registers
+            return memory[index];
         case 0xFF80 ... 0xFFFE: //High RAM
             return memory[index];
-            break;
         case 0xFFFF: //Interrupt Enable Register
             return memory[index];
-            break;
         default:
             return 0xFF;
-            break;
     }
 }
 
@@ -216,7 +215,17 @@ void GB_MEM::write(unsigned short index, unsigned char value) {
                 memory[0xFE00 + i] = this->read((value << 8) + i);
             }
             break;
-        case 0xFF47 ...0xFF7F: //IO Ports
+        case 0xFF47 ... 0xFF4C: // IO Ports
+            memory[index] = value;
+            break;
+        case 0xFF4D: // CGB KEY1 register - not writable in DMG mode
+            break;
+        case 0xFF4E ... 0xFF73: // IO Ports
+            memory[index] = value;
+            break;
+        case 0xFF74: // CGB mode register - not writable in DMG mode
+            break;
+        case 0xFF75 ... 0xFF7F: // Undocumented
             memory[index] = value;
             break;
         case 0xFF80 ... 0xFFFE: //High RAM
@@ -227,7 +236,6 @@ void GB_MEM::write(unsigned short index, unsigned char value) {
             break;
         default:
             return;
-            break;
     }
 }
 

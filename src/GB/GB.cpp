@@ -14,9 +14,11 @@ void GB::execute() {
     short cycles = 0;
     int totalCycles = 0;
     auto ticks = SDL_GetTicks();
-    int totalFrames = 0;
     while(cycles != -1 && !quit)
     {
+        // Uncomment if using gameboy-doctor
+        // cpu.printRegsForLog();
+
         if(totalCycles >= 70224)//Only handle input and events once per frame
         {
             //Handle SDL Events
@@ -39,8 +41,7 @@ void GB::execute() {
             }
 
             ticks = SDL_GetTicks();
-            totalCycles = 0;
-            totalFrames++;
+            totalCycles -= 70224;
         }
 
         cycles = cpu.execute();
