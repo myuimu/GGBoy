@@ -26,18 +26,12 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           echo "C:\msys64\mingw64\bin" >> $GITHUB_PATH
-      - name: setup-ninja
-        uses: ashutoshvarma/setup-ninja@master
-        with:
-          # ninja version to download. Default: 1.10.0
-          version: 1.10.0
+      - name: setup-cmake
+        uses: lukka/get-cmake@latest
       - name: build
-        uses: threeal/cmake-action@v1.3.0
-        with:
-          run-build: true
-          generator: Ninja
-          c-compiler: clang
-          cxx-compiler: clang++
+        run: |
+          cmake -S . -B build -D CMAKE_C_COMPILER=clang -D CMAKE_CXX_COMPILER=clang++ -G ninja
+          cmake --build build --verbose
       - name: upload-artifacts
         uses: actions/upload-artifact@v4
         with:
