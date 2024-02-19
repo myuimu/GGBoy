@@ -36,7 +36,7 @@ jobs:
       - name: upload-artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-files
+          name: build-files-${{ matrix.os }}
           path: |
             build/**
 
