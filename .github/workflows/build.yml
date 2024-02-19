@@ -31,7 +31,7 @@ jobs:
       - name: build
         run: |
           mkdir build
-          cmake -S . -B build -D CMAKE_C_COMPILER=clang -D CMAKE_CXX_COMPILER=clang++ -G ninja
+          cmake -S . -B build -D CMAKE_C_COMPILER=clang -D CMAKE_CXX_COMPILER=clang++ -G Ninja
           cmake --build build --verbose
       - name: upload-artifacts
         uses: actions/upload-artifact@v4
