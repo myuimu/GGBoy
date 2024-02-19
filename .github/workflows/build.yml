@@ -9,7 +9,10 @@ env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
 jobs:
   build:
-    runs-on: [ubuntu-latest, macos-latest-large, windows-latest]
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-13, windows-latest ]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: libsdl-org/setup-sdl@main
         id: sdl
