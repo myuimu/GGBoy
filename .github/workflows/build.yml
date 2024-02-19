@@ -17,4 +17,4 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: build
-      run: cmake --build build
+      run: cmake --build .
