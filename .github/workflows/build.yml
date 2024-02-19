@@ -15,8 +15,9 @@ jobs:
         os: [ubuntu-latest, macos-13, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-    - name: build
+    - name: checkout
       uses: actions/checkout@v4
+    - name: build
       run: |
         cmake .
         make
