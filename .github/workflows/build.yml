@@ -1,0 +1,42 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+env:
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ macos-13, windows-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: libsdl-org/setup-sdl@main
+        id: sdl
+        with:
+          install-linux-dependencies: true
+          version: 2-latest
+          version-sdl-image: 2-latest
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: setup-clang-windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          echo "C:\msys64\mingw64\bin" >> $GITHUB_PATH
+      - name: setup-cmake
+        uses: lukka/get-cmake@latest
+      - name: build
+        run: |
+          mkdir build
+          cmake -S . -B build -D CMAKE_C_COMPILER=clang -D CMAKE_CXX_COMPILER=clang++ -G Ninja
+          cmake --build build --verbose
+      - name: upload-artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-files-${{ matrix.os }}
+          path: |
+            build/GGBoy
+            build/*.exe
+
