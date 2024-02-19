@@ -39,4 +39,5 @@ jobs:
           name: build-files-${{ matrix.os }}
           path: |
             build/GGBoy
+            build/*.exe
 
