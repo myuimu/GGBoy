@@ -38,5 +38,5 @@ jobs:
         with:
           name: build-files-${{ matrix.os }}
           path: |
-            build/**
+            build/GGBoy
 
