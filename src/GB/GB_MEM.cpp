@@ -400,8 +400,8 @@ void GB_MEM::handleButton(const unsigned char *keys) {
 void GB_MEM::updateTimers(int cycles) {
     //Increment Divider
     elapsedDividerCycles += cycles;
-    if (elapsedDividerCycles >= DIV_CYCLES) {
-        elapsedDividerCycles -= DIV_CYCLES;
+    if (elapsedDividerCycles >= getCyclesForFrequency(DIV_FREQUENCY)) {
+        elapsedDividerCycles -= getCyclesForFrequency(DIV_FREQUENCY);
         memory[0xFF04]++;
     }
 
@@ -412,16 +412,16 @@ void GB_MEM::updateTimers(int cycles) {
         int cyclesNeeded = 0;
         switch (timerClock) {
             case 0:
-                cyclesNeeded = TIM_00_CYCLES;
+                cyclesNeeded = getCyclesForFrequency(TIM_00_FREQUENCY);
                 break;
             case 1:
-                cyclesNeeded = TIM_01_CYCLES;
+                cyclesNeeded = getCyclesForFrequency(TIM_01_FREQUENCY);
                 break;
             case 2:
-                cyclesNeeded = TIM_10_CYCLES;
+                cyclesNeeded = getCyclesForFrequency(TIM_10_FREQUENCY);
                 break;
             case 3:
-                cyclesNeeded = TIM_11_CYCLES;
+                cyclesNeeded = getCyclesForFrequency(TIM_11_FREQUENCY);
                 break;
         }
 
@@ -436,6 +436,10 @@ void GB_MEM::updateTimers(int cycles) {
             }
         }
     }
+}
+
+int GB_MEM::getCyclesForFrequency(int frequency) const {
+    return cpuFrequency / frequency;
 }
 
 void GB_MEM::save() {

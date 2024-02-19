@@ -22,11 +22,8 @@ class GB_MEM {
         bool enableRam = false;
         bool ROMBanking = false;
 
-        const int DIV_CYCLES = 256;
-        const int TIM_00_CYCLES = 1024;
-        const int TIM_01_CYCLES = 16;
-        const int TIM_10_CYCLES = 64;
-        const int TIM_11_CYCLES = 256;
+        int cpuFrequency = BASE_FREQUENCY;
+
         int elapsedTimerCycles = 0;
         int elapsedDividerCycles = 0;
         
@@ -64,6 +61,8 @@ class GB_MEM {
         void handleButton(const unsigned char * keys);
 
         void updateTimers(int cycles);
+
+        int getCyclesForFrequency(int frequency) const;
 
         void save();
 
