@@ -12,5 +12,7 @@ add_executable(main
     ${MAIN_FILES}
 )
 
+set_target_properties(main PROPERTIES OUTPUT_NAME "GGBoy")
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${SDL2_INCLUDE_DIRS})
 target_link_libraries(main ${SDL2_LIBRARIES})
