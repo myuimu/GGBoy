@@ -26,6 +26,11 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           echo "C:\msys64\mingw64\bin" >> $GITHUB_PATH
+      - name: setup-ninja
+        uses: ashutoshvarma/setup-ninja@master
+        with:
+          # ninja version to download. Default: 1.10.0
+          version: 1.10.0
       - name: build
         uses: threeal/cmake-action@v1.3.0
         with:
