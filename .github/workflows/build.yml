@@ -23,6 +23,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: setup-path
+        if: matrix.os == 'windows-latest'
         run: |
           export CC=C:\msys64\mingw64\bin\clang
           export CXX=C:\msys64\mingw64\bin\clang++
