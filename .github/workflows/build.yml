@@ -30,6 +30,8 @@ jobs:
         uses: threeal/cmake-action@v1.3.0
         with:
           run-build: true
+          generator: Ninja
+          c-compiler: clang
           cxx-compiler: clang++
       - name: upload-artifacts
         uses: actions/upload-artifact@v4
