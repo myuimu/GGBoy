@@ -15,6 +15,12 @@ jobs:
         os: [ubuntu-latest, macos-13, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v4
     - name: build
+      uses: actions/checkout@v4
       run: cmake --build .
+    - name: upload-artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: executable
+        path: |
+          main
