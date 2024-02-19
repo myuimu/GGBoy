@@ -23,9 +23,9 @@ class GB_MEM {
         bool ROMBanking = false;
 
         const int DIV_CYCLES = 256;
-        const int TIM_00_CYCLES = 64;
-        const int TIM_01_CYCLES = 4096;
-        const int TIM_10_CYCLES = 1024;
+        const int TIM_00_CYCLES = 1024;
+        const int TIM_01_CYCLES = 16;
+        const int TIM_10_CYCLES = 64;
         const int TIM_11_CYCLES = 256;
         int elapsedTimerCycles = 0;
         int elapsedDividerCycles = 0;

@@ -400,19 +400,17 @@ void GB_MEM::handleButton(const unsigned char *keys) {
 void GB_MEM::updateTimers(int cycles) {
     //Increment Divider
     elapsedDividerCycles += cycles;
-    if(elapsedDividerCycles >= DIV_CYCLES)
-    {
+    if (elapsedDividerCycles >= DIV_CYCLES) {
         elapsedDividerCycles -= DIV_CYCLES;
         memory[0xFF04]++;
     }
 
-    if(memory[0xFF07] & 0x04) //If timer enabled
-    {
+    // If timer enabled
+    if (memory[0xFF07] & 0x04) {
         elapsedTimerCycles += cycles;
         unsigned char timerClock = memory[0xFF07] & 0x03;
         int cyclesNeeded = 0;
-        switch(timerClock)
-        {
+        switch (timerClock) {
             case 0:
                 cyclesNeeded = TIM_00_CYCLES;
                 break;
@@ -426,12 +424,13 @@ void GB_MEM::updateTimers(int cycles) {
                 cyclesNeeded = TIM_11_CYCLES;
                 break;
         }
-        if(elapsedTimerCycles >= cyclesNeeded)
-        {
+
+        if (elapsedTimerCycles >= cyclesNeeded) {
             elapsedTimerCycles -= cyclesNeeded;
             memory[0xFF05]++;
-            if(memory[0xFF05] == 0) //Timer overflowed
-            {
+
+            // Timer overflowed
+            if(memory[0xFF05] == 0) {
                 memory[0xFF05] = memory[0xFF06]; //Fill with Timer Modulo value
                 memory[0xFF0F] |= (1 << 2); //Request timer interrupt
             }

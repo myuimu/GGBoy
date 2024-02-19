@@ -38,7 +38,7 @@ GB_GPU::GB_GPU() {
 }
 
 void GB_GPU::update(short cycles) {
-    if(memory->read(LCDC) & 0b10000000 != 0b10000000) //Lcd enabled
+    if((memory->read(LCDC) & 0b10000000) != 0b10000000) //Lcd enabled
     {
         currentCycle = 0;
         memory->write(LY,0);
